@@ -1,0 +1,27 @@
+/ASV_sys_interface.spec
+/tax_from_nalogru_parser.spec
+/Программа.spec
+/Программа_для_поиска_счетов_в_других_банках.spec
+/Программа_для_сбора_инфы_о_банках.spec
+/venv/2020-11-17.png
+/venv/asdas.py
+/venv/mydesign.py
+/venv/pyvenv.cfg
+/venv/qtable.py
+/venv/signaledit.py
+/venv/tax_from_nalogru_parser.py
+/venv/Taxes_2019.txt
+/venv/work_program.py
+/venv/Даты_отзыва.txt
+/venv/Информация_о_банках.py
+/venv/Как сделать exe файл.txt
+/venv/Поиск_счетов_заемщиков_в_других_банках.py
+/venv/Список_банков.txt
+/venv/tests/
+/venv/Scripts/
+/venv/Lib/
+/venv/Include/
+/build/
+/dist/
+/src/
+/target/
