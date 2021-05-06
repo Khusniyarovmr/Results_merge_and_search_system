@@ -9,6 +9,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_FirstSearchMenu(object):
     def setupUi(self, MainWindow):
         MainWindow.resize(700, 400)
+        MainWindow.setWindowTitle("Поиск информации по параметрам")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("ASV_image.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -54,7 +55,6 @@ class Ui_FirstSearchMenu(object):
         self.status_bar = QtWidgets.QStatusBar(MainWindow)
         MainWindow.setStatusBar(self.status_bar)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.tableWidget.installEventFilter(self)
 
@@ -83,7 +83,15 @@ class Ui_FirstSearchMenu(object):
             csv.writer(stream, delimiter='\t').writerows(table)
             QtWidgets.qApp.clipboard().setText(stream.getvalue())
 
+class FSM(QtWidgets.QMainWindow, Ui_FirstSearchMenu):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Поиск информации по параметрам"))
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle('Fusion')
+    win = FSM()
+    win.show()
+    sys.exit(app.exec_())
