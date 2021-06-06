@@ -1142,18 +1142,17 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
                         SUM(CAST(REPLACE(kp_ul_fl_raschet.real_cost_exp, ',', '.') AS real)) AS real_cost_exp,
                         SUM(CAST(REPLACE(kp_ul_fl_raschet.reservi, ',', '.') AS real)) AS reservi,
                         SUM(CAST(REPLACE(kp_ul_fl_raschet.corr_expert, ',', '.') AS real)) AS corr_expert,
-                        GROUP_CONCAT(grp.gruppa, ';') AS gruppa
+                        GROUP_CONCAT(DISTINCT kp_ul_fl_raschet.gruppa) AS gruppa
                         FROM 
                         banks,                         
                         clients,
-                        kp_ul_fl_raschet,                         
-                        (SELECT DISTINCT kp_ul_fl_raschet.gruppa FROM kp_ul_fl_raschet) as grp
+                        kp_ul_fl_raschet                     
                         WHERE
                         banks.small_name = '""" + str(data_from_db[i][0]) + """'
                         AND clients.id_client = '""" + str(data_from_db[i][12]) + """'
                         AND clients.inn = kp_ul_fl_raschet.inn and banks.id = kp_ul_fl_raschet.bank_id
                         GROUP BY banks.small_name, banks.id, clients.inn, clients.name, clients.doc_seria, 
-                        clients.doc_number, grp.gruppa""")
+                        clients.doc_number, kp_ul_fl_raschet.gruppa""")
             data_prep_tab = cur.fetchall()
             if data_prep_tab:
                 data_for_tab.append(data_prep_tab[0])
