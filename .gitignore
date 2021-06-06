@@ -32,3 +32,5 @@
 /api-ms-win-core-path-l1-1-0.dll
 /ASV_result_system/asv_db.db
 /ASV_result_system/db_for_sqlite.sql
+/ASV_result_system/run.bat
+/ASV_result_system/Interface_test.spec
