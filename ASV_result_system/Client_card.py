@@ -4,6 +4,7 @@ import psycopg2
 import io
 import locale
 import csv
+import sqlite3
 from KD_widget import KredDogovor
 from DannieOPZ import DannieOPZ
 from KartochkaZaemchika import ZaemchikCard
@@ -1132,27 +1133,32 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         self.OPZCard.show()
 
     def zapros_1(self, data_from_db):  # kp_ul_fl_raschet
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
             cur.execute("""
                         SELECT
                         banks.small_name, banks.id, clients.inn, clients.name, 
-                        CONCAT_WS(' ', REPLACE(clients.doc_seria,' ',''), REPLACE(clients.doc_number,' ','')),
+                        REPLACE(clients.doc_seria,' ','') || ' ' || REPLACE(clients.doc_number,' ',''),                        
                         SUM(CAST(REPLACE(kp_ul_fl_raschet.balance_cost, ',', '.') AS real)) AS balance_cost,
                         SUM(CAST(REPLACE(kp_ul_fl_raschet.real_cost_exp, ',', '.') AS real)) AS real_cost_exp,
                         SUM(CAST(REPLACE(kp_ul_fl_raschet.reservi, ',', '.') AS real)) AS reservi,
                         SUM(CAST(REPLACE(kp_ul_fl_raschet.corr_expert, ',', '.') AS real)) AS corr_expert,
-                        STRING_AGG(DISTINCT(kp_ul_fl_raschet.gruppa), ';') AS gruppa
-                        FROM banks, clients, kp_ul_fl_raschet
+                        GROUP_CONCAT(grp.gruppa, ';') AS gruppa
+                        FROM 
+                        banks,                         
+                        clients,
+                        kp_ul_fl_raschet,                         
+                        (SELECT DISTINCT kp_ul_fl_raschet.gruppa FROM kp_ul_fl_raschet) as grp
                         WHERE
                         banks.small_name = '""" + str(data_from_db[i][0]) + """'
                         AND clients.id_client = '""" + str(data_from_db[i][12]) + """'
                         AND clients.inn = kp_ul_fl_raschet.inn and banks.id = kp_ul_fl_raschet.bank_id
                         GROUP BY banks.small_name, banks.id, clients.inn, clients.name, clients.doc_seria, 
-                        clients.doc_number, kp_ul_fl_raschet.gruppa""")
+                        clients.doc_number, grp.gruppa""")
             data_prep_tab = cur.fetchall()
             if data_prep_tab:
                 data_for_tab.append(data_prep_tab[0])
@@ -1161,16 +1167,17 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_2(self, data_from_db):  # kp_ul_opis
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
             cur.execute("""
                         SELECT
                         banks.small_name, banks.id, clients.inn, clients.name,
-                        CONCAT_WS(' ', REPLACE(clients.doc_seria,' ',''), REPLACE(clients.doc_number,' ','')),
-                        CONCAT_WS(' от ', kp_ul_opis.ur_dela_bankrot, kp_ul_opis.date_dela) AS UR_DELA,
+                        REPLACE(clients.doc_seria,' ','') || ' ' || REPLACE(clients.doc_number,' ',''),
+                        kp_ul_opis.ur_dela_bankrot || ' от ' || kp_ul_opis.date_dela as UR_DELA,                        
                         kp_ul_opis.beneficiar, kp_ul_opis.fin_po, kp_ul_opis.obsluz_dolga_bank_exp,
                         kp_ul_opis.korr_asv_exp, kp_ul_opis.korr_asv_590
                         FROM banks, clients, kp_ul_opis
@@ -1190,15 +1197,16 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_3(self, data_from_db):  # kp_ul_spark
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
             cur.execute("""
                         SELECT
                         banks.small_name, banks.id, clients.inn, clients.name, 
-                        CONCAT_WS(' ', REPLACE(clients.doc_seria,' ',''), REPLACE(clients.doc_number,' ','')),
+                        REPLACE(clients.doc_seria,' ','') || ' ' || REPLACE(clients.doc_number,' ',''),                        
                         kp_ul_spark.date_gos_reg, CAST(REPLACE(kp_ul_spark.uk, ',', '.') AS real) AS ustav_cap, kp_ul_spark.chislennost, kp_ul_spark.adres_reg, 
                         kp_ul_spark.vid, kp_ul_spark.status, kp_ul_spark.rukovoditel
                         FROM banks, clients, kp_ul_spark
@@ -1217,20 +1225,24 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_4(self, data_from_db):  # obespechenie - общая сумма и виды обеспечения
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
             cur.execute("""
                         SELECT
                         banks.small_name, banks.id, clients.inn, clients.name, 
-                        CONCAT_WS(' ', REPLACE(clients.doc_seria,' ',''), REPLACE(clients.doc_number,' ','')),
+                        REPLACE(clients.doc_seria,' ','') || ' ' || REPLACE(clients.doc_number,' ',''),
                         obespechenie.summa_obesp, obespechenie.vid_ob
                         FROM banks, clients, 
-                        (SELECT bank_id, inn, SUM(CAST(REPLACE(summa_s_nds, ',', '.') AS real)) summa_obesp, 
-                        STRING_AGG(DISTINCT(vid), ', ') AS vid_ob 
-                        FROM obespechenie GROUP BY bank_id, inn) as obespechenie
+                            (SELECT obespechenie.bank_id, obespechenie.inn, SUM(CAST(REPLACE(obespechenie.summa_s_nds, ',', '.') AS real)) summa_obesp, 
+                                GROUP_CONCAT(obsp.vid, ', ') AS vid_ob 
+                            FROM 
+                                obespechenie,
+                                (SELECT DISTINCT obespechenie.vid FROM obespechenie) as obsp
+                            GROUP BY obespechenie.bank_id, obespechenie.inn) as obespechenie
                         WHERE
                         banks.small_name = '""" + str(data_from_db[i][0]) + """'
                         and clients.id_client = '""" + str(data_from_db[i][12]) + """'
@@ -1245,15 +1257,16 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_5(self, data_from_db):  # opz - обслуживается или нет
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
             cur.execute("""
                         SELECT
                         banks.small_name, banks.id, clients.inn, clients.name, 
-                        CONCAT_WS(' ', REPLACE(clients.doc_seria,' ',''), REPLACE(clients.doc_number,' ','')),
+                        REPLACE(clients.doc_seria,' ','') || ' ' || REPLACE(clients.doc_number,' ',''),                        
                         opz.dolg_ne_obsl_posle
                         FROM banks, clients,
                         (SELECT bank_id, inn, dolg_ne_obsl_posle FROM opz) as opz
@@ -1271,8 +1284,9 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_6(self, data_from_db):  # accounts - все счета клиента
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1296,8 +1310,9 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_7(self, data_from_db):  # obespechenie - информация об обеспечении
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1323,8 +1338,9 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_8(self, data_from_db):  # KD - информация об Кредитах
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1355,8 +1371,9 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_9(self, data_from_db):  # OPZ - информация OPZ
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1389,8 +1406,9 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_10(self, data_from_db):  # OPZ - информация OPZ
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):

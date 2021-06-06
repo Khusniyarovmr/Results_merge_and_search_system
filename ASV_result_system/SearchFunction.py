@@ -5,6 +5,7 @@ import time
 import timeit
 from collections import Counter
 from datetime import datetime
+import sqlite3
 
 import openpyxl
 import psycopg2
@@ -294,8 +295,9 @@ class Searching(QtCore.QThread):
         pass
 
     def poisk_v_zakl(self, spisok):
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         cur.execute("SELECT bank_id, file_1 FROM bank_information WHERE bank_information.file_1 != ''")
         file_zakluchenia_string = cur.fetchall()
@@ -321,8 +323,9 @@ class Searching(QtCore.QThread):
         return itogi_poiska_zak
 
     def poisk_v_otchetah_ab(self, spisok):
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         cur.execute("SELECT bank_id, file_7 FROM bank_information WHERE bank_information.file_7 != ''")
         file_zakluchenia_string = cur.fetchall()
@@ -348,8 +351,9 @@ class Searching(QtCore.QThread):
         return itogi_poiska_otchetah_ab
 
     def poisk_v_xlsx(self, spisok, file):
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         cur.execute("""SELECT bank_id, """ + file + """ FROM bank_information WHERE bank_information.""" + file + """ != ''""")
         files_string = cur.fetchall()
@@ -374,8 +378,9 @@ class Searching(QtCore.QThread):
         return itogi_poiska_xlsx
 
     def poisk_v_bank_clients(self, spisok):
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         cur.execute("SELECT bank_id, id_client, name, inn, doc_seria, doc_number FROM clients")
         bank_clients_string = cur.fetchall()
@@ -408,8 +413,9 @@ class Searching(QtCore.QThread):
     def poisk_v_clients_account(self, spisok):
         # print(spisok)
         if spisok == []: return
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         itogi_poiska_client_accounts = []
         for k in range(len(spisok)):
@@ -430,8 +436,9 @@ class Searching(QtCore.QThread):
         return itogi_poiska_client_accounts
 
     def poisk_v_ocenke_zaemchikov(self, spisok):
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         cur.execute("SELECT * FROM reestr_popavshih_v_viborku")
         ocenka_zaemchikov_string = cur.fetchall()
@@ -455,8 +462,9 @@ class Searching(QtCore.QThread):
         return itogi_poiska_v_ocenke_zaemchikov
 
     def reestr_bankov(self):
-        con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-                                     port="5432")
+        con_to_DB = sqlite3.connect('asv_db.db')
+        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
+        #                              port="5432")
         cur = con_to_DB.cursor()
         cur.execute("SELECT id, small_name FROM banks")
         reestr_bankov = cur.fetchall()

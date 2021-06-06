@@ -1,16 +1,11 @@
-import os
 import os.path
-from os import path
 import re
-import time
-from datetime import datetime
 import docx
 import pandas as pd
-import openpyxl
 
 f_directory_ok = ['C:/NEW/Файлы_заключений_для_системы/Заключения', 'C:/NEW/Файлы_заключений_для_системы/Отчет_АБ'
-                  , 'C:/NEW/Файлы_заключений_для_системы/Мастер_файлы', 'C:/NEW/Файлы_заключений_для_системы/Табл_3'
-                  , 'C:/NEW/Файлы_заключений_для_системы/Целевое']
+    , 'C:/NEW/Файлы_заключений_для_системы/Мастер_файлы', 'C:/NEW/Файлы_заключений_для_системы/Табл_3'
+    , 'C:/NEW/Файлы_заключений_для_системы/Целевое']
 for dir in f_directory_ok:
     se_dir = str(dir) + '/Поиск'
     files_ok = os.listdir(dir)

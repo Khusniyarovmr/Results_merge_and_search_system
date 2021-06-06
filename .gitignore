@@ -3,21 +3,21 @@
 /Программа.spec
 /Программа_для_поиска_счетов_в_других_банках.spec
 /Программа_для_сбора_инфы_о_банках.spec
-/venv/2020-11-17.png
-/venv/asdas.py
-/venv/mydesign.py
+/2020-11-17.png
+/asdas.py
+/mydesign.py
 /venv/pyvenv.cfg
-/venv/qtable.py
-/venv/signaledit.py
-/venv/tax_from_nalogru_parser.py
-/venv/Taxes_2019.txt
-/venv/work_program.py
-/venv/Даты_отзыва.txt
-/venv/Информация_о_банках.py
-/venv/Как сделать exe файл.txt
-/venv/Поиск_счетов_заемщиков_в_других_банках.py
-/venv/Список_банков.txt
-/venv/tests/
+/qtable.py
+/signaledit.py
+/tax_from_nalogru_parser.py
+/Taxes_2019.txt
+/work_program.py
+/Даты_отзыва.txt
+/Информация_о_банках.py
+/Как сделать exe файл.txt
+/Поиск_счетов_заемщиков_в_других_банках.py
+/Список_банков.txt
+/tests/
 /venv/Scripts/
 /venv/Lib/
 /venv/Include/
@@ -26,3 +26,9 @@
 /src/
 /target/
 /Поиск_счетов_заемщиков_в_других_банках.spec
+/light_search/untitled.ui
+/light_search/
+/mainwindow.spec
+/api-ms-win-core-path-l1-1-0.dll
+/ASV_result_system/asv_db.db
+/ASV_result_system/db_for_sqlite.sql
