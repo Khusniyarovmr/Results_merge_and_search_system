@@ -3,9 +3,8 @@
 import os
 import sys
 import sqlite3
-
+from CONSTANTS import DATA_BASE
 import keyboard
-import psycopg2
 from Client_card import ClientCardWindow
 from ComboBox_ver_1 import ExtendedComboBox as excombo
 from Dialog_bank_input import Ui_Dialog as BankInputDialog
@@ -17,7 +16,7 @@ from mainwindow import Ui_MainWindow as ProggrammMainMenu
 from paragraph_show import Paragraph
 from win32api import GetCursorPos
 
-con_to_DB = sqlite3.connect('asv_db.db')
+con_to_DB = sqlite3.connect(DATA_BASE)
 
 
 class MyMainWindow(QtWidgets.QMainWindow, ProggrammMainMenu):

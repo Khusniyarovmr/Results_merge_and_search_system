@@ -2,6 +2,7 @@ import os
 import re
 from datetime import datetime
 import sqlite3
+from CONSTANTS import DATA_BASE
 
 from PyQt5 import QtCore
 import docx
@@ -71,11 +72,7 @@ class Searching(QtCore.QThread):
             t1 = datetime.now() - t0
             t_now = datetime.now()
             self.status_mes.emit(str('(1/9) Завершилась функция подготовки значений ' + str(t1.seconds) + ' секунд'))
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
-
+            if not self.poisk_cancel(self.stoped()): return
             # Запускаем поиск.
             # Поиск в Заключениях и в отчете АБ. Используем WORD.
             search_result_in_zakl = self.poisk_v_zakl(search_string)
@@ -83,19 +80,15 @@ class Searching(QtCore.QThread):
             t_now = datetime.now()
             self.status_mes.emit(str('(2/9) Завершилась функция поиска в заключениях ' + str(
                 t2.seconds) + ' с. Запуск поиска в отчетах АБ'))
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
+            
             search_result_in_otchet_ab = self.poisk_v_otchetah_ab(search_string)
             t2 = datetime.now() - t_now
             t_now = datetime.now()
             self.status_mes.emit(str('(3/9) Завершилась функция поиска в заключениях ' + str(
                 t2.seconds) + ' с. Запуск поиска в целевом'))
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
+            
             # Поиск в Целевом, Реестре попавших в выборку. Используем Excel.
             # search_result_in_celevoe = self.poisk_v_celevom(search_string)
             search_result_in_celevoe = self.poisk_v_xlsx(search_string, 'file_2')
@@ -103,30 +96,23 @@ class Searching(QtCore.QThread):
             t_now = datetime.now()
             self.status_mes.emit(
                 str('(4/9) Завершилась функция поиска в целевом ' + str(t3.seconds) + ' с. Запуск поиска в выборке'))
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
+            
             # search_result_in_viborka = self.poisk_v_viborke(search_string)
             search_result_in_viborka = self.poisk_v_xlsx(search_string, 'file_4')
             t4 = datetime.now() - t_now
             t_now = datetime.now()
             self.status_mes.emit(
                 str('(5/9) Завершилась функция поиска в выборке ' + str(t4.seconds) + ' с. Запуск поиска в клиентах'))
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
+            
             # search_result_in_master_file = self.poisk_v_viborke(search_string)
             search_result_in_master_file = self.poisk_v_xlsx(search_string, 'file_8')
             t4 = datetime.now() - t_now
             t_now = datetime.now()
             self.status_mes.emit(
                 str('(6/9) Завершилась функция поиска в выборке ' + str(t4.seconds) + ' с. Запуск поиска в клиентах'))
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
 
             # Поиск в клиентах банка, реестре сделок, реестре бенифициаров. Используем Postgresql
             search_result_in_clients = self.poisk_v_bank_clients(search_string)
@@ -134,10 +120,8 @@ class Searching(QtCore.QThread):
             t_now = datetime.now()
             self.status_mes.emit(
                 str('(7/9) Завершилась функция поиска в клиентах ' + str(t5.seconds) + ' с. Запуск поиска в счетах'))
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
+            
             client_string = []
             for i in range(0, len(search_result_in_clients)):
                 client_string.append([search_result_in_clients[i][j] for j in range(2)])
@@ -146,22 +130,15 @@ class Searching(QtCore.QThread):
             t_now = datetime.now()
             self.status_mes.emit(str('(8/9) Завершилась функция поиска в счетах ' + str(
                 t6.seconds) + ' с. Запуск поиска в оценке заемщиков'))
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
+            
             search_result_in_ocenka_zaemchikov = self.poisk_v_ocenke_zaemchikov(search_result_in_clients)
             t7 = datetime.now() - t_now
             t_now = datetime.now()
             self.status_mes.emit(
                 str('(9/9) Завершилась функция поиска в оценке заемщиков ' + str(t7.seconds) + ' с.'))
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
-
-            # reestr_beneficiarov_string = cur.fetchall()
-
+            if not self.poisk_cancel(self.stoped()): return
+            
             if search_result_in_client_accounts:
                 client_zaemchik = {str(id_client_acc[0]) + '^' + str(id_client_acc[1]): 'Клиент' for id_client_acc in
                                    search_result_in_client_accounts}
@@ -177,19 +154,13 @@ class Searching(QtCore.QThread):
                         str(search_result_in_ocenka_zaemchikov[i][0]) + '^' + str(
                             search_result_in_ocenka_zaemchikov[i][2])] = \
                         search_result_in_ocenka_zaemchikov[i][3]
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
-
+            if not self.poisk_cancel(self.stoped()): return
+            
             name_vseh_bankov = self.reestr_bankov()
             dic_bank_names = {id_name_bank[0]: id_name_bank[1] for id_name_bank in name_vseh_bankov}
             string_for_table = []
             spisok_id_bankov = []
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
             for zak in search_result_in_zakl: spisok_id_bankov.append(zak[0])
             for otch in search_result_in_otchet_ab: spisok_id_bankov.append(otch[0])
             for celev in search_result_in_celevoe: spisok_id_bankov.append(celev[0])
@@ -197,10 +168,8 @@ class Searching(QtCore.QThread):
             for cl in search_result_in_clients: spisok_id_bankov.append(cl[0])
             for mf in search_result_in_master_file: spisok_id_bankov.append(mf[0])
             spisok_id_bankov = list(set(spisok_id_bankov))
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
+            
             proverka = {}
             for i in range(len(spisok_id_bankov)):
                 for j in range(len(search_result_in_clients)):
@@ -223,56 +192,37 @@ class Searching(QtCore.QThread):
                     a = [dic_bank_names[spisok_id_bankov[i]], '', '', '', '', '', '', '', '', '', '', '', '', '']
                     string_for_table.append(a)
                     proverka[dic_bank_names[spisok_id_bankov[i]]] = ''
-
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
 
             for k in range(len(string_for_table)):
                 for j in range(len(search_result_in_viborka)):
                     if dic_bank_names[search_result_in_viborka[j][0]] == string_for_table[k][0]:
                         string_for_table[k][9] = search_result_in_viborka[j][1]
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
 
             for k in range(len(string_for_table)):
                 for j in range(len(search_result_in_celevoe)):
                     if dic_bank_names[search_result_in_celevoe[j][0]] == string_for_table[k][0]:
                         string_for_table[k][10] = search_result_in_celevoe[j][1]
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
 
             for k in range(len(string_for_table)):
                 for j in range(len(search_result_in_master_file)):
                     if dic_bank_names[search_result_in_master_file[j][0]] == string_for_table[k][0]:
                         string_for_table[k][11] = search_result_in_master_file[j][1]
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
 
             for k in range(len(string_for_table)):
                 for j in range(len(search_result_in_zakl)):
                     if dic_bank_names[search_result_in_zakl[j][0]] == string_for_table[k][0]:
                         string_for_table[k][7] = search_result_in_zakl[j][1]
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
 
             for k in range(len(string_for_table)):
                 for j in range(len(search_result_in_otchet_ab)):
                     if dic_bank_names[search_result_in_otchet_ab[j][0]] == string_for_table[k][0]:
                         string_for_table[k][8] = search_result_in_otchet_ab[j][1]
-            if not self.stoped():
-                self.status_mes.emit(str('Поиск отменён!'))
-                self.finished.emit()
-                return
+            if not self.poisk_cancel(self.stoped()): return
 
             self.working = False
             t8 = datetime.now() - t0
@@ -283,11 +233,14 @@ class Searching(QtCore.QThread):
         return self.working
 
     def poisk_cancel(self, fact):
-        # TODO: dfsdf
-        pass
+        if not fact:
+            self.status_mes.emit(str('Поиск отменён!'))
+            self.finished.emit()
+            return None
+        return 'Zero'
 
     def poisk_v_zakl(self, spisok):
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         cur.execute("SELECT bank_id, file_1 FROM bank_information WHERE bank_information.file_1 != ''")
         file_zakluchenia_string = cur.fetchall()
@@ -313,7 +266,7 @@ class Searching(QtCore.QThread):
         return itogi_poiska_zak
 
     def poisk_v_otchetah_ab(self, spisok):
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         cur.execute("SELECT bank_id, file_7 FROM bank_information WHERE bank_information.file_7 != ''")
         file_zakluchenia_string = cur.fetchall()
@@ -339,7 +292,7 @@ class Searching(QtCore.QThread):
         return itogi_poiska_otchetah_ab
 
     def poisk_v_xlsx(self, spisok, file):
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         cur.execute(
             """SELECT bank_id, """ + file + """ FROM bank_information WHERE bank_information.""" + file + """ != ''""")
@@ -365,7 +318,7 @@ class Searching(QtCore.QThread):
         return itogi_poiska_xlsx
 
     def poisk_v_bank_clients(self, spisok):
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         cur.execute("SELECT bank_id, id_client, name, inn, doc_seria, doc_number FROM clients")
         bank_clients_string = cur.fetchall()
@@ -398,7 +351,7 @@ class Searching(QtCore.QThread):
     def poisk_v_clients_account(self, spisok):
         # print(spisok)
         if spisok == []: return
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         itogi_poiska_client_accounts = []
         for k in range(len(spisok)):
@@ -419,7 +372,7 @@ class Searching(QtCore.QThread):
         return itogi_poiska_client_accounts
 
     def poisk_v_ocenke_zaemchikov(self, spisok):
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         cur.execute("SELECT * FROM reestr_popavshih_v_viborku")
         ocenka_zaemchikov_string = cur.fetchall()
@@ -443,7 +396,7 @@ class Searching(QtCore.QThread):
         return itogi_poiska_v_ocenke_zaemchikov
 
     def reestr_bankov(self):
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         cur.execute("SELECT id, small_name FROM banks")
         reestr_bankov = cur.fetchall()

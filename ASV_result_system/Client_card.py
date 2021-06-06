@@ -4,6 +4,7 @@ import io
 import locale
 import csv
 import sqlite3
+from CONSTANTS import DATA_BASE
 from KD_widget import KredDogovor
 from DannieOPZ import DannieOPZ
 from KartochkaZaemchika import ZaemchikCard
@@ -528,10 +529,10 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         for i in range(len(data_from_db)):
             data = []
             data2 = []
-            d1 = ['', '', '', '', '', '', '', '', '']
-            d2 = ['', '', '', '', '', '']
-            d3 = ['', '', '', '', '', '', '']
-            d4 = ['', '']
+            d1 = [''] * 9
+            d2 = [''] * 6
+            d3 = [''] * 7
+            d4 = [''] * 2
             d5 = ['']
             if data_for_tab_1:
                 for k in data_for_tab_1:
@@ -605,7 +606,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
         for i in range(len(data_from_db)):
             data = []
-            d6 = ['', '', '']
+            d6 = [''] * 3
             if data_for_tab_6:
                 for k in data_for_tab_6:
                     if k[0] == data_from_db[i][0]:
@@ -628,7 +629,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
         for i in range(len(data_from_db)):
             data = []
-            d7 = ['', '', '', '', '', '', '', '', '']
+            d7 = [''] * 9
             if data_for_tab_7:
                 for k in data_for_tab_7:
                     if k[0] == data_from_db[i][0]:
@@ -650,7 +651,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
         for i in range(len(data_from_db)):
             data = []
-            d8 = ['', '', '', '', '', '', '', '', '', '', '', '']
+            d8 = [''] * 12
             if data_for_tab_8:
                 for k in data_for_tab_8:
                     if k[0] == data_from_db[i][0]:
@@ -672,9 +673,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
         for i in range(len(data_from_db)):
             data = []
-            d9 = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
-                  , '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
-                  , '', '', '', '', '', '', '', '', '']
+            d9 = [''] * 49
             if data_for_tab_9:
                 for k in data_for_tab_9:
                     if k[0] == data_from_db[i][0]:
@@ -696,8 +695,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
         for i in range(len(data_from_db)):
             data = []
-            d10 = ['', '', '', '', '', '', '', '', '', '', '', '',
-                   '', '', '', '', '', '', '', '', '', '', '']
+            d10 = [''] * 23
             if data_for_tab_10:
                 for k in data_for_tab_10:
                     if k[0] == data_from_db[i][0]:
@@ -1132,7 +1130,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         self.OPZCard.show()
 
     def zapros_1(self, data_from_db):  # kp_ul_fl_raschet
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1164,7 +1162,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_2(self, data_from_db):  # kp_ul_opis
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1192,7 +1190,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_3(self, data_from_db):  # kp_ul_spark
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1218,7 +1216,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_4(self, data_from_db):  # obespechenie - общая сумма и виды обеспечения
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1252,7 +1250,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_5(self, data_from_db):  # opz - обслуживается или нет
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1277,7 +1275,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_6(self, data_from_db):  # accounts - все счета клиента
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1301,7 +1299,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_7(self, data_from_db):  # obespechenie - информация об обеспечении
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1327,7 +1325,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_8(self, data_from_db):  # KD - информация об Кредитах
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1358,7 +1356,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_9(self, data_from_db):  # OPZ - информация OPZ
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1391,7 +1389,7 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         return data_for_tab
 
     def zapros_10(self, data_from_db):  # OPZ - информация OPZ
-        con_to_DB = sqlite3.connect('asv_db.db')
+        con_to_DB = sqlite3.connect(DATA_BASE)
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
