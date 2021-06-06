@@ -34,3 +34,5 @@
 /ASV_result_system/db_for_sqlite.sql
 /ASV_result_system/run.bat
 /ASV_result_system/Interface_test.spec
+/ASV_result_system/dist/
+/ASV_result_system/build/
