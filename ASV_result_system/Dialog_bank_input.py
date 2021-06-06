@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-import os
-import sys
-
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):

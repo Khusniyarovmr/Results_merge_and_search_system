@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from PyQt5 import QtCore, QtGui, QtWidgets
-import psycopg2
 import io
 import locale
 import csv
@@ -1134,8 +1133,6 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
     def zapros_1(self, data_from_db):  # kp_ul_fl_raschet
         con_to_DB = sqlite3.connect('asv_db.db')
-        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1168,8 +1165,6 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
     def zapros_2(self, data_from_db):  # kp_ul_opis
         con_to_DB = sqlite3.connect('asv_db.db')
-        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1198,8 +1193,6 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
     def zapros_3(self, data_from_db):  # kp_ul_spark
         con_to_DB = sqlite3.connect('asv_db.db')
-        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1226,8 +1219,6 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
     def zapros_4(self, data_from_db):  # obespechenie - общая сумма и виды обеспечения
         con_to_DB = sqlite3.connect('asv_db.db')
-        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1262,8 +1253,6 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
     def zapros_5(self, data_from_db):  # opz - обслуживается или нет
         con_to_DB = sqlite3.connect('asv_db.db')
-        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1289,8 +1278,6 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
     def zapros_6(self, data_from_db):  # accounts - все счета клиента
         con_to_DB = sqlite3.connect('asv_db.db')
-        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1315,8 +1302,6 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
     def zapros_7(self, data_from_db):  # obespechenie - информация об обеспечении
         con_to_DB = sqlite3.connect('asv_db.db')
-        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1343,8 +1328,6 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
     def zapros_8(self, data_from_db):  # KD - информация об Кредитах
         con_to_DB = sqlite3.connect('asv_db.db')
-        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1376,8 +1359,6 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
     def zapros_9(self, data_from_db):  # OPZ - информация OPZ
         con_to_DB = sqlite3.connect('asv_db.db')
-        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):
@@ -1411,8 +1392,6 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
 
     def zapros_10(self, data_from_db):  # OPZ - информация OPZ
         con_to_DB = sqlite3.connect('asv_db.db')
-        # con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-        #                              port="5432")
         cur = con_to_DB.cursor()
         data_for_tab = []
         for i in range(len(data_from_db)):

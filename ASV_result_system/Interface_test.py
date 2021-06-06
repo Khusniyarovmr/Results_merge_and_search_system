@@ -17,12 +17,7 @@ from mainwindow import Ui_MainWindow as ProggrammMainMenu
 from paragraph_show import Paragraph
 from win32api import GetCursorPos
 
-#con_to_DB = psycopg2.connect(database="New_system_ASV", user="postgres", password="qwerty", host="127.0.0.1",
-#                             port="5432")
 con_to_DB = sqlite3.connect('asv_db.db')
-
-# con_to_DB = psycopg2.connect(database="ASV_Stress_Test_db", user="postgres", password="qwerty", host="127.0.0.1",
-#                            port="5432")
 
 
 class MyMainWindow(QtWidgets.QMainWindow, ProggrammMainMenu):
