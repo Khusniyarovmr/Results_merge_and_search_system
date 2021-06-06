@@ -1232,23 +1232,27 @@ class ClientCardWindow(QtWidgets.QMainWindow, UI_MainWindow):
         data_for_tab = []
         for i in range(len(data_from_db)):
             cur.execute("""
-                        SELECT
-                        banks.small_name, banks.id, clients.inn, clients.name, 
-                        REPLACE(clients.doc_seria,' ','') || ' ' || REPLACE(clients.doc_number,' ',''),
-                        obespechenie.summa_obesp, obespechenie.vid_ob
-                        FROM banks, clients, 
-                            (SELECT obespechenie.bank_id, obespechenie.inn, SUM(CAST(REPLACE(obespechenie.summa_s_nds, ',', '.') AS real)) summa_obesp, 
-                                GROUP_CONCAT(obsp.vid, ', ') AS vid_ob 
-                            FROM 
-                                obespechenie,
-                                (SELECT DISTINCT obespechenie.vid FROM obespechenie) as obsp
-                            GROUP BY obespechenie.bank_id, obespechenie.inn) as obespechenie
-                        WHERE
-                        banks.small_name = '""" + str(data_from_db[i][0]) + """'
-                        and clients.id_client = '""" + str(data_from_db[i][12]) + """'
-                        and clients.inn = obespechenie.inn and banks.id = obespechenie.bank_id
-                        group by banks.small_name, banks.id, clients.inn, clients.name, clients.doc_seria, 
-                        clients.doc_number, obespechenie.summa_obesp, obespechenie.vid_ob""")
+                          SELECT
+                          banks.small_name, banks.id, clients.inn, clients.name,
+                          REPLACE(clients.doc_seria,' ','') || ' ' || REPLACE(clients.doc_number,' ',''),
+                          ob_for_sum_obesp.summa_obesp, ob_for_vid_ob.vid_ob
+                          FROM banks, clients,
+                              (SELECT obespechenie.bank_id, obespechenie.inn, SUM(CAST(REPLACE(obespechenie.summa_s_nds, ',', '.') AS real)) AS summa_obesp
+                              FROM obespechenie GROUP BY obespechenie.bank_id, obespechenie.inn) as ob_for_sum_obesp,
+                              (SELECT obespechenie.bank_id, obespechenie.inn, GROUP_CONCAT(DISTINCT obespechenie.vid) AS vid_ob
+                              FROM obespechenie                        
+                              GROUP BY obespechenie.bank_id, obespechenie.inn) as ob_for_vid_ob
+                          WHERE
+                          banks.small_name = '""" + str(data_from_db[i][0]) + """'
+                          and clients.id_client = '""" + str(data_from_db[i][12]) + """'
+                          and clients.inn = ob_for_sum_obesp.inn
+                          and banks.id = ob_for_sum_obesp.bank_id
+                          and clients.inn = ob_for_vid_ob.inn
+                          and banks.id = ob_for_vid_ob.bank_id
+                          group by banks.small_name, banks.id, clients.inn, clients.name, clients.doc_seria,
+                          clients.doc_number, ob_for_sum_obesp.summa_obesp, ob_for_vid_ob.vid_ob
+                          """
+                        )
             data_prep_tab = cur.fetchall()
             if data_prep_tab:
                 data_for_tab.append(data_prep_tab[0])
